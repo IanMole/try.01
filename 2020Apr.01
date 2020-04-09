@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+
+from time import sleep
+import os
+import RPi.GPIO as GPIO
+import sys
+import subprocess
+from subprocess import Popen
+
+def sensorCallback(channel):
+  # Called if sensor output changes
+  if GPIO.input(channel):
+    # No magnet
+    print("HIGH")
+  else:
+    # Magnet
+    print("LOW")
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#GPIO.setup(18, GPIO.IN)
+
+hallpin = 18
+sleepTime = 0.1
+
+GPIO.setup( hallpin, GPIO.IN)
+
+movie1 = ("/home/pi/Desktop/movie1.mp4")
+
+try:
+    while True:
+        if GPIO.input(hallpin) == True:
+        #print("magnet detected")
+            omxc=subprocess.Popen(['omxplayer', '-b', movie1])
+
+        else:
+        #print("magnet not detected")
+        #os.system('killall omxplayer.bin')
+             #os.system('/home/pi/mu_code/dbuscontrol.sh pause')
+            omxc=subprocess.Popen(['omxplayer', '-b', movie1])
+    #sleep(sleepTime)
+
+except KeyboardInterrupt:
+    # Reset GPIO settings
+    GPIO.cleanup()
+#except KeyboardInterrupt:
+#	print ("Exception: KeyboardInterrupt")
